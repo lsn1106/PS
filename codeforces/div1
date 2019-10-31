@@ -1,1 +1,79 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+typedef long long ll;
+const int MAX = 100001;
 
+ll cost[3][MAX];
+vector<int> adj[MAX];
+
+bool visited[MAX];
+int lpoint;
+void find_lpoint(int curr) {
+	visited[curr] = true;
+	
+	lpoint = curr;
+	for (int next : adj[curr]) 
+		if (!visited[next]) 
+			find_lpoint(next);
+}
+
+int order[MAX];
+int cnt = 0;
+void makeOrd(int curr) {
+	visited[curr] = true;
+	order[cnt++] = curr;
+	for (int next : adj[curr]) 
+		if (!visited[next]) 
+			makeOrd(next);			
+}
+
+int main() {
+	int n; cin >> n;
+	for (int i = 0; i < 3; i++) 
+		for (int j = 1; j <= n; j++)
+			cin >> cost[i][j];
+
+	for (int i = 0,u,v; i < n - 1; i++) {
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	for (int i = 1; i <= n; i++) {
+		if (adj[i].size() > 2) {
+			cout << -1 << '\n';
+			return 0;
+		}
+	}
+
+	find_lpoint(1);
+	fill(visited, visited + MAX, 0);
+	makeOrd(lpoint);
+	
+	ll mn = 1e18;
+	int arr[3] = { 0,1,2 }, arr2[3];
+	do{
+		ll sum = 0;
+		int t = 0;
+		for (int j = 0; j < n; j++) 
+			sum += cost[arr[(++t)%3]][order[j]];
+		
+		if (mn > sum) {
+			mn = sum;
+			for (int i = 0; i < 3; i++)
+				arr2[i] = arr[i];
+		}
+	} while (next_permutation(arr, arr + 3));
+
+	cout << mn << '\n';
+
+	int t = 0, ans[MAX];
+	for (int j = 0; j < n; j++)
+		ans[order[j]] = arr2[(++t) % 3];
+
+	for (int i = 1; i <= n; i++)
+		cout << ans[i]+1 << " ";
+	cout << '\n';
+}
