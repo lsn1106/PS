@@ -1,0 +1,50 @@
+/*
+19.11.3 codeforce 597 c
+Constanze's Machine
+*/
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+const int MAX = 1e5+1;
+const int MOD = 1e9 + 7;
+typedef long long ll;
+
+int main() {
+	string str; cin >> str;
+	int idx_u[MAX], usize=0, idx_n[MAX], nsize=0;
+	for (int i = 0; i < str.size(); i++) {
+		if (str[i] == 'u') 
+			idx_u[usize++] = i;
+		if (str[i] == 'n')
+			idx_n[nsize++] = i;		
+	}
+
+	ll d[MAX] = { 0 };
+	d[1] = 1, d[2] = 2;
+	for (int i = 3; i <= MAX-1; i++)
+		d[i] = (d[i - 1] + d[i - 2]) % MOD;
+
+
+	ll t = 1, ans_u = 1, ans_n=1;
+	for (int i = 1; i <= usize; i++) {
+		if (i<usize && idx_u[i] - idx_u[i - 1] == 1)
+			t++;
+		else {
+			ans_u = (ans_u * d[t])%MOD;
+			t = 1;
+		}
+	}
+	for (int i = 1; i <= nsize; i++) {
+		if (i<nsize && idx_n[i] - idx_n[i - 1] == 1)
+			t++;
+		else {
+			ans_n = (ans_n * d[t]) % MOD;
+			t = 1;
+		}
+	}
+	if (str.find("m") != string::npos || str.find("w") != string::npos)
+		cout << 0 << '\n';
+	else
+		cout << (ans_u * ans_n) % MOD << '\n';
+}
