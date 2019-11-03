@@ -1,0 +1,19 @@
+/*
+19.11.3 3으로 나눈 순열
+*/
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int testcase; cin >> testcase;
+	for (int tc = 1; tc <= testcase; tc++) {
+		int n, arr[3][3] = { 0 }; //그룹 i에 속한 그룹j요소 수
+		cin >> n;
+		for (int i = 1, input; i <= n; i++) {
+			cin >> input;
+			if (input % 3 != i % 3) arr[i % 3][input % 3]++;
+		}
+		cout << "#" << tc << " " << arr[0][1]+arr[0][2] + max(arr[1][2], arr[2][1]) << '\n';
+	}
+}
