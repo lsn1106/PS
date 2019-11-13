@@ -1,0 +1,27 @@
+/*
+19.11.12 단순구현
+*/
+#include <iostream>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+
+	int n; cin >> n;
+	if (n % 2) {
+		cout << "YES\n";
+		
+		int cnt = 2*n, curr = 1;
+		bool f = false;
+		while (cnt--) {
+			cout << (curr==0? 2*n : curr) << " ";
+			curr = (curr + (f ? 1 : 3)) % (2*n);
+			f = !f;
+		}
+		cout << '\n';
+	}
+	else 
+		cout << "NO\n";
+}
