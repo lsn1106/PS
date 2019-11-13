@@ -1,0 +1,78 @@
+/*
+19.11.13 bit, pigeon hole principle, loop in undirected, dijkstra
+*/
+#include <iostream>
+#include <functional>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <utility>
+using namespace std;
+typedef long long ll;
+typedef pair<int, int> P;
+const int MAX = 122;
+const int INF = 1e9;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n = 0, num;  cin >> num;
+
+	bool adj[MAX][MAX] = { 0 };
+	ll arr[MAX];
+	for (int i = 0; i < num; i++) {
+		ll input; cin >> input;
+		if (input == 0) continue;	
+		if (n > 120) break;
+		arr[++n] = input;
+	}
+
+	if (n > 120) {
+		cout << 3 << '\n';
+		return 0;
+	}
+
+	for (int i = 1; i <= n; i++) 
+		for (int j = 1; j <= n; j++) 
+			if ((arr[i] & arr[j]) != 0) 			
+				adj[i][j] = adj[j][i] = true;
+
+	int mn = 1e9;
+	for (int i = 1; i < n; i++) {
+		for (int j = i+1; j <= n; j++) {
+			if (!adj[i][j]) continue;
+			adj[i][j] = adj[j][i] = 0;
+
+			int dist[MAX];
+			fill(dist, dist + MAX, INF);
+			dist[i] = 0;
+			bool visited[MAX] = { 0 };
+
+			priority_queue<P, vector<P>, greater<P>> pq;
+			pq.push({ dist[i] , i });
+			while (!pq.empty()) {
+				int curr;
+				do {
+					curr = pq.top().second;
+					pq.pop();
+				} while (!pq.empty() && visited[curr]);
+				if (visited[curr]) break;
+
+				visited[curr] = true;
+
+				for (int next = 1; next <= n; next++) {
+					if (!adj[curr][next] || curr==next) continue;
+					int d = 1;
+					if (dist[next] > dist[curr] + d) {
+						dist[next] = dist[curr] + d;
+						pq.push({ dist[next],next });
+					}
+				}
+			}
+			adj[i][j] = adj[j][i] = true;
+			mn = min(mn, dist[j]);
+		}
+	}
+	cout << (mn>=INF ? -1 : mn+1) << '\n';
+}
