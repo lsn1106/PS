@@ -1,0 +1,66 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <unordered_map>
+#include <set>
+#include <vector>
+#include <utility>
+using namespace std;
+const int MAX = 1e5 + 1;
+typedef pair<string, string> ss;
+
+vector<int> adj[MAX];
+bool visited[MAX];
+string arr[MAX];
+unordered_map<string, int> dic;
+
+set<string> ans;
+void dfs(int curr) {
+	visited[curr] = true;
+	if (arr[curr].compare("Baba") != 0)
+		ans.insert(arr[curr]);
+	for (int next : adj[curr]) {
+		if (!visited[next])
+			dfs(next);
+	}
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+
+	int n; cin >> n;
+	vector<ss> odr;
+	set<string> can;
+
+	while (n--) {
+		string p, q;
+		cin >> p >> q >> q;
+		can.insert(p);
+		can.insert(q);
+		odr.push_back({ p,q });
+	}
+
+	int cnt = 0, st = -1;
+	for (auto str : can) {
+		if (str.compare("Baba") == 0) st = cnt;
+		dic[str] = cnt;
+		arr[cnt++] = str;
+	}
+
+	for (int i = 0; i < odr.size(); i++) {
+		string p = odr[i].first;
+		string q = odr[i].second;
+		int u = dic[p], v = dic[q];
+
+		adj[u].push_back(v);
+	}
+
+	if (st != -1) {
+		dfs(st);
+		for (string str : ans) {
+			cout << str << '\n';
+		}
+	}
+}
